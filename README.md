@@ -8,7 +8,7 @@ headless on some cloud where I would use simple tools like vim to do all my work
 But, now I found VS code and gitkraken so now I need a screen.  To achieve this, I use
 vncserver.
 
-# How to build it
+## How to build it
 
 Build like this:
 
@@ -27,7 +27,7 @@ $ docker images|grep myimage
 myimage                                                     latest              292968e3b2da        13 seconds ago      2.56GB
 ```
 
-# Startup the container
+## Startup the container
 
 Before starting up the container, consider giving your docker installation some extra RAM depending on
 what you intend to run. I have mine 4G or RAM and 2 CPUs.
@@ -52,7 +52,7 @@ docker ps -a
 docker logs xxxx (where xxxx is the container name)
 ```
 
-# Login to the container
+## Login to the container
 
 You'll have to login using ssh on port 2024 so you can startup the vncserver on port
 5910.
@@ -73,7 +73,7 @@ Would you like to enter a view-only password (y/n)? n
 dperiquet@test1:~$
 ```
 
-# Start vncserver
+## Start vncserver
 
 Start the vncserver like this:
 
@@ -89,7 +89,7 @@ I did this:
 * Configured the vncserver to listen on all interfaces of the container; this is so that
   I can point the vnc client to any address of the container.
 
-# Start the vnc client
+## Start the vnc client
 
 Go to [real vnc](https://www.realvnc.com/en/connect/download/viewer/macos/) to download a
 vnc client.  I chose the one for OSX.
@@ -98,7 +98,7 @@ Point your vnc client to 127.0.0.1:10 and enter your password.
 
 I set picture quality to "Medium".
 
-# Fixup and Customize the Container
+## Fixup and Customize the Container
 
 In the UI, I automatically ran `vncconfig -iconify` so that cut/paste will work across
 your desktop and into the vnc session.  You can use shift-control-c and shift-control-v to
@@ -113,3 +113,7 @@ Once in the xfce4 UI:
 * Click Applications->TerminalEmulator to get a Terminal
   * From within the Terminal, type `code &` to start Visual Studio Code
   * From within the Terminal, type `gitkraken &` to start Gitkraken
+
+## Problems
+
+I've tried both Firefox and Chrome and both browsers crash on pages.  I don't know why.

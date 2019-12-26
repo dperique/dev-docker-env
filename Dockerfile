@@ -118,6 +118,7 @@ COPY gitkraken-amd64.deb /tmp
 RUN sudo apt -y install /tmp/google-chrome-stable_current_amd64.deb
 RUN sudo apt -y install /tmp/code_1.41.1-1576681836_amd64.deb
 RUN sudo apt -y install /tmp/gitkraken-amd64.deb
+RUN sudo apt -y install firefox
 
 RUN echo "bonnyci:${mypassword}" | chpasswd
 RUN adduser bonnyci sudo
@@ -133,6 +134,18 @@ RUN chmod a+x /home/dperiquet/.vnc/xstartup
 ADD vnc_pass /home/dperiquet/.vnc/passwd
 RUN chown dperiquet /home/dperiquet/.vnc/passwd
 
+# Install all my code extensions.
+#
+USER dperiquet
+RUN code --install-extension alefragnani.project-manager
+RUN code --install-extension donjayamanne.githistory
+RUN code --install-extension Equinusocio.vsc-material-theme
+RUN code --install-extension ms-azuretools.vscode-docker
+RUN code --install-extension ms-python.python
+RUN code --install-extension rogalmic.bash-debug
+RUN code --install-extension yzhang.markdown-all-in-one
+
+USER root
 # SSH login fix. Otherwise user is kicked off after login
 CMD sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 CMD ["sudo", "/usr/sbin/sshd", "-D"]

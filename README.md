@@ -114,6 +114,51 @@ Once in the xfce4 UI:
   * From within the Terminal, type `code &` to start Visual Studio Code
   * From within the Terminal, type `gitkraken &` to start Gitkraken
 
+## Commit Changes (Optional)
+
+If you made a lot of changes and don't want to start over, then commit your changes to a new
+image.  This way, you can start another container with those changes there already.
+
+```bash
+$ docker container commit --pause 44abe97626af myimage:0.1
+sha256:02ff2b5c2a86fd85fbeab147ed191b31a6f254013c10ad85b2bc86c22b49a95b
+$ docker images |grep myimage
+myimage                                                     0.1                 02ff2b5c2a86        About a minute ago   3.75GB
+myimage                                                     latest              c18fd6ec81b0        2 hours ago          2.56GB
+```
+
+## Run Docker in this container (docker in docker)
+
+My use-case is to be able to run docker inside my container but I don't need to
+run containers inside the container -- I just want to run docker commands using
+the docker daemon of the host.
+
+Note: I added `-v /var/run/docker.sock:/var/run/docker.sock` to make this possible.
+You may have to run `--privileged`.
+
+```bash
+$ docker run --name test1 -h test1 -p 2024:22 -p 5910:5910 -v /var/run/docker.sock:/var/run/docker.sock -v ~/Downloads:/home/dperique/Downloads -d myimage:0.1
+5673d86f386dda5abb6085fc7ec85223477b3e7c10807a2f1e57187339445f90
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                          NAMES
+5673d86f386d        myimage:0.1         "sudo /usr/sbin/sshd…"   32 seconds ago      Up 31 seconds       0.0.0.0:5910->5910/tcp, 0.0.0.0:2024->22/tcp   test1
+
+$ ssh -p 2024 -o "StrictHostKeyChecking no" dperiquet@127.0.0.1
+Last login: Thu Dec 26 18:21:33 2019 from 172.17.0.1
+
+dperiquet@test1:~$ sudo apt-get -y install docker.io
+dperiquet@test1:~$ which docker
+/usr/bin/docker
+
+dperiquet@test1:~$ docker images
+REPOSITORY                                                  TAG                 IMAGE ID            CREATED             SIZE
+myimage                                                     0.1                 02ff2b5c2a86        3 minutes ago       3.75GB
+myimage                                                     latest              c18fd6ec81b0        2 hours ago         2.56GB
+```
+
+The output of `docker images` shows the images list of the host.
+
 ## Problems
 
 I've tried both Firefox and Chrome and both browsers crash on pages.  I don't know why.

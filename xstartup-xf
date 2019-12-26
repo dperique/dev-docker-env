@@ -1,0 +1,2 @@
+exec /usr/bin/vncconfig -iconic &
+exec /usr/bin/startxfce4 &

@@ -98,3 +98,18 @@ Point your vnc client to 127.0.0.1:10 and enter your password.
 
 I set picture quality to "Medium".
 
+# Fixup and Customize the Container
+
+In the UI, I automatically ran `vncconfig -iconify` so that cut/paste will work across
+your desktop and into the vnc session.  You can use shift-control-c and shift-control-v to
+copy and paste respectively.
+
+Once in the xfce4 UI:
+
+* Click Applications->Settings->PreferredApplications, for web browser, select "Other ...", enter
+`/usr/bin/google-chrome-stable --no-sandbox`, then click Close.
+* Click the globe at the bottom to start Chrome
+  * Make Chrome the default browser.
+* Click Applications->TerminalEmulator to get a Terminal
+  * From within the Terminal, type `code &` to start Visual Studio Code
+  * From within the Terminal, type `gitkraken &` to start Gitkraken

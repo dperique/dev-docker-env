@@ -133,17 +133,9 @@ RUN chmod a+x /home/dperiquet/.vnc/xstartup
 ADD vnc_pass /home/dperiquet/.vnc/passwd
 RUN chown dperiquet /home/dperiquet/.vnc/passwd
 
-
-# Can't do this since it asks for password.
-#
-# vncserver :10 -geometry 1280x1024 -depth 24 -localhost no
-
 # SSH login fix. Otherwise user is kicked off after login
 CMD sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-
-#EXPOSE 22
 CMD ["sudo", "/usr/sbin/sshd", "-D"]
 
 USER dperiquet
 WORKDIR /home/dperiquet
-#ENTRYPOINT ["./keriodic.sh", "zfs-patching"]

@@ -39,6 +39,10 @@ local downloads folder so I can access to those files from within the continaer.
 $ docker run --name test1 -h test1 -p 2024:22 -p 5910:5910 -v ~/Downloads:/home/dperique/Downloads -d myimage:latest
 9ff2c389f5e9b5ad67e9b494743f9a6b26cdcfc5203861e3f3aa0d04fa2c6d65
 
+or
+
+$ docker run --name test1 -h test1 -p 2024:22 -p 5910:5910 -v /var/run/docker.sock:/var/run/docker.sock -v ~/mygit/dperique/:/home/dperiquet/mygit/dperique -d myimage:latest
+
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                          NAMES
 9ff2c389f5e9        myimage:latest      "sudo /usr/sbin/sshd…"   4 seconds ago       Up 3 seconds        0.0.0.0:5910->5910/tcp, 0.0.0.0:2024->22/tcp   test1

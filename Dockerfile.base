@@ -1,9 +1,13 @@
 # Just ubuntu 18.04 plus xfce4, ssh, and vnc
+# Build with:
+#   docker build -f Dockerfile.base -t dperique/ubuntu18-vnc-xfce4-ssh:v2 .
 # Do "docker pull dperique/ubuntu18-vnc-xfce4-ssh:v1" for a prebuilt image.
 # Then do:
-#   docker run --name testb -h testb -p 2024:22 -p 5930:5930 -d dperiquet/ubuntu18-vnc-xfce4-ssh:v1
+#   docker run --name testb -h testb -p 2024:22 -p 5930:5930 -d dperique/ubuntu18-vnc-xfce4-ssh:v1
 #   login as ubuntu/ubuntu
 #   vncserver :30 -geometry 1280x1024 -depth 24 -localhost no
+#   or
+#   cd ~ ; ./vnc.sh
 # Point your vncviewer to 127.0.0.1:30
 #
 FROM ubuntu:18.04
@@ -47,3 +51,15 @@ CMD ["sudo", "/usr/sbin/sshd", "-D"]
 
 USER ubuntu
 WORKDIR /home/ubuntu
+
+RUN command mkdir /home/ubuntu/.vnc
+USER root
+ADD xstartup-xf /home/ubuntu/.vnc/xstartup
+ADD vnc_pass /home/ubuntu/.vnc/passwd
+RUN chown ubuntu /home/ubuntu/.vnc/xstartup
+RUN chown ubuntu /home/ubuntu/.vnc/passwd
+
+USER ubuntu
+RUN echo "password" | vncpasswd -f > /home/ubuntu/.vnc/passwd
+RUN echo "vncserver :30 -geometry 1280x1024 -depth 24 -localhost no" > /home/ubuntu/vnc.sh
+RUN chmod a+x /home/ubuntu/vnc.sh

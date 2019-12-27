@@ -1,0 +1,49 @@
+# Just ubuntu 18.04 plus xfce4, ssh, and vnc
+# Do "docker pull dperique/ubuntu18-vnc-xfce4-ssh:v1" for a prebuilt image.
+# Then do:
+#   docker run --name testb -h testb -p 2024:22 -p 5930:5930 -d dperiquet/ubuntu18-vnc-xfce4-ssh:v1
+#   login as ubuntu/ubuntu
+#   vncserver :30 -geometry 1280x1024 -depth 24 -localhost no
+# Point your vncviewer to 127.0.0.1:30
+#
+FROM ubuntu:18.04
+
+RUN apt-get update && apt-get upgrade
+
+RUN apt-get install -y openssh-server sudo
+
+RUN mkdir /var/run/sshd
+
+# Install tigervnc as your vnc server.
+#
+RUN sudo apt-get -y install tigervnc-standalone-server tigervnc-xorg-extension tigervnc-viewer
+
+# use xfce4 as a light window manager that seems to work ok in a container.
+#
+RUN sudo DEBIAN_FRONTEND=noninteractive  apt -y install xfce4 xfce4-goodies
+RUN sudo apt -y install xfce4 xfce4-goodies
+RUN sudo apt -y purge xscreensaver
+
+RUN sudo apt-get -y install software-properties-common
+
+# Give a root password but don't allow ssh to it.
+#
+USER root
+RUN echo "root:S0m3th1ngS3cu43!" | chpasswd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# Make an ubuntu user and give it sudo.
+#
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1002 ubuntu
+RUN echo "ubuntu:ubuntu" | chpasswd
+RUN adduser ubuntu sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+
+# SSH login fix. Otherwise user is kicked off after login
+RUN command sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+CMD ["sudo", "/usr/sbin/sshd", "-D"]
+
+USER ubuntu
+WORKDIR /home/ubuntu

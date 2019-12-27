@@ -20,7 +20,7 @@ RUN apt-get -y install jq
 RUN apt-get -y install python3 python-tox python-pip
 RUN apt-get -y install sudo libgnutls30
 RUN apt-get -y install vim vim-common vim-runtime
-RUN apt-get -y install curl
+RUN apt-get -y install curl docker.io
 RUN apt-get -y install --only-upgrade bash sudo
 RUN apt-get -y install --only-upgrade libgnutls30 libseccomp2
 RUN apt-get -y install --only-upgrade curl
@@ -34,7 +34,7 @@ RUN pip install --upgrade pip
 RUN pip install pyyaml
 RUN pip install ansible-modules-hashivault>=3.9.4
 
-RUN apt-get install -y vim tree inetutils-ping git tcpdump psmisc sudo curl net-tools moreutils
+RUN apt-get install -y vim tree inetutils-ping git tcpdump psmisc sudo net-tools moreutils
 
 # Install kubectl.
 #

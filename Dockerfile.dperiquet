@@ -1,7 +1,6 @@
 # This base2 image contains the "base" of my customizations.
 #
-# docker build -t base2:v1 -f Dockerfile.dperiquet --build-arg mypassword=S0m3th1ngS3cu43! .
-# docker tag base2:v1 dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1
+# docker build -t dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1 -f Dockerfile.dperiquet --build-arg mypassword=S0m3th1ngS3cu43! .
 # docker push dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1
 
 # docker run --name kuul18 -h kuul18 -p 2025:22 -p 5910:5910 -d dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1
@@ -16,11 +15,10 @@ ARG mypassword
 # Install some tools that you might want to use (feel free to tweak this list)
 #
 USER root
-RUN apt-get -y install python3 python-tox python-pip sudo libgnutls30 vim vim-common vim-runtime
+RUN apt-get -y install python3 python-tox python-pip sudo libgnutls30 vim vim-common vim-runtime tmux
 RUN apt-get -y install jq vim tree inetutils-ping git tcpdump psmisc sudo net-tools moreutils curl docker.io
 RUN apt-get -y install --only-upgrade bash sudo
 RUN apt-get -y install --only-upgrade libgnutls30 libseccomp2
-RUN apt-get -y install --only-upgrade curl
 RUN apt-get -y install --only-upgrade libdb5.3 libexpat1
 RUN apt-get -y install --only-upgrade bzip2 libbz2-1.0
 RUN apt-get -y install --only-upgrade vim-common vim vim-runtime
@@ -65,6 +63,7 @@ RUN adduser dperiquet sudo
 # If you install an extension, see ~/.vscode/extensions for the names
 #
 USER dperiquet
+RUN code --install-extension vscodevim.vim
 RUN code --install-extension alefragnani.project-manager
 RUN code --install-extension donjayamanne.githistory
 RUN code --install-extension Equinusocio.vsc-material-theme

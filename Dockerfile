@@ -32,5 +32,10 @@ RUN chown dperiquet /home/dperiquet/.vnc/passwd
 
 USER dperiquet
 RUN echo "password" | vncpasswd -f > /home/dperiquet/.vnc/passwd
-RUN echo "vncserver :30 -geometry 1280x1024 -depth 24 -localhost no" > /home/dperiquet/vnc.sh
+RUN echo "#!/bin/bash" > /home/dperiquet/vnc.sh
+RUN echo "vncserver :31 -passwd /home/dperiquet/.vnc/passwd -geometry 1280x1024 -depth 24 -localhost no" >> /home/dperiquet/vnc.sh
+#RUN echo "sleep 999999999" >> /home/dperiquet/vnc.sh
 RUN chmod a+x /home/dperiquet/vnc.sh
+#CMD [ "vncserver", ":31", "-passwd", "/home/dperiquet/.vnc/passwd", "-geometry", "1280x1024", "-depth 24", "-localhost", "no" ]
+#RUN vncserver :31 -passwd /home/dperiquet/.vnc/passwd -geometry 1280x1024 -depth 24 -localhost no
+#CMD [ "/home/dperiquet/vnc.sh" ]

@@ -62,6 +62,7 @@ RUN echo "ubuntu:${mypassword}" | chpasswd
 RUN adduser dperiquet sudo
 
 # Install all my code extensions.
+# If you install an extension, see ~/.vscode/extensions for the names
 #
 USER dperiquet
 RUN code --install-extension alefragnani.project-manager

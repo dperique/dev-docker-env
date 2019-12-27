@@ -1,0 +1,73 @@
+# This base2 image contains the "base" of my customizations.
+#
+# docker build -t base2:v1 -f Dockerfile.dperiquet --build-arg mypassword=S0m3th1ngS3cu43! .
+# docker tag base2:v1 dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1
+# docker push dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1
+
+# docker run --name kuul18 -h kuul18 -p 2025:22 -p 5910:5910 -d dperique/ubuntu18-vnc-xfce4-ssh-dperiquet:v1
+# ssh -p 2025 -o "StrictHostKeyChecking no" -i ~/.ssh/junk.id_rsa dperiquet@127.0.0.1
+
+FROM dperique/ubuntu18-vnc-xfce4-ssh:v1
+
+# Pass in your password.
+#
+ARG mypassword
+
+# Install some tools that you might want to use (feel free to tweak this list)
+#
+USER root
+RUN apt-get -y install python3 python-tox python-pip sudo libgnutls30 vim vim-common vim-runtime
+RUN apt-get -y install jq vim tree inetutils-ping git tcpdump psmisc sudo net-tools moreutils curl docker.io
+RUN apt-get -y install --only-upgrade bash sudo
+RUN apt-get -y install --only-upgrade libgnutls30 libseccomp2
+RUN apt-get -y install --only-upgrade curl
+RUN apt-get -y install --only-upgrade libdb5.3 libexpat1
+RUN apt-get -y install --only-upgrade bzip2 libbz2-1.0
+RUN apt-get -y install --only-upgrade vim-common vim vim-runtime
+RUN apt-get -y install --only-upgrade libseccomp2 libsqlite3-0
+
+RUN pip install --upgrade tox
+RUN pip install --upgrade pip
+RUN pip install pyyaml
+RUN pip install ansible-modules-hashivault>=3.9.4
+
+# Install kubectl.
+#
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.4/bin/linux/amd64/kubectl
+RUN chmod +x ./kubectl
+RUN mv ./kubectl /usr/local/bin/kubectl
+
+# Install older ansible for kubespray work.
+#
+RUN pip install ansible\<=2.4.1
+
+# Install VS code, gitkraken, and firefox.
+# You will have to download these and put them into your current directory so the images
+# can be installed.
+#
+COPY code_1.41.1-1576681836_amd64.deb /tmp
+COPY gitkraken-amd64.deb /tmp
+RUN sudo apt -y install /tmp/code_1.41.1-1576681836_amd64.deb
+RUN sudo apt -y install /tmp/gitkraken-amd64.deb
+RUN sudo apt -y install firefox
+
+# Add some favorite users and some ssh enviroments for them.
+# You can comment any of these lines out if you don't need any extra keys, etc.
+# Since the base image comes with ubuntu/ubuntu, I overwrote it with my own password.
+#
+USER root
+RUN useradd -rm -d /home/dperiquet -s /bin/bash -g root -G sudo -u 1009 dperiquet
+RUN echo "dperiquet:${mypassword}" | chpasswd
+RUN echo "ubuntu:${mypassword}" | chpasswd
+RUN adduser dperiquet sudo
+
+# Install all my code extensions.
+#
+USER dperiquet
+RUN code --install-extension alefragnani.project-manager
+RUN code --install-extension donjayamanne.githistory
+RUN code --install-extension Equinusocio.vsc-material-theme
+RUN code --install-extension ms-azuretools.vscode-docker
+RUN code --install-extension ms-python.python
+RUN code --install-extension rogalmic.bash-debug
+RUN code --install-extension yzhang.markdown-all-in-one
